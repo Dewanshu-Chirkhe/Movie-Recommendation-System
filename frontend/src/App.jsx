@@ -91,7 +91,6 @@ export default function App() {
 
     return (
         <div className="app">
-
             <main className="main-content">
                 <section className="search-section">
                     <h2>Movie Recommendations System</h2>
@@ -133,46 +132,90 @@ export default function App() {
                 {loading && <p className="loading-message">Loading...</p>}
 
                 {selectedMovie && (
-                    <section className="section">
-                        <div className="selected-movie">
-                            <h3>{selectedMovie.title}</h3>
-
-                            <p>
-                                {selectedMovie.genres?.join(", ") ||
-                                    "Genres unavailable"}
-                            </p>
-
-                            {selectedMovie.vote_average != null && (
-                                <p>
-                                    Rating:{" "}
-                                    {Number(selectedMovie.vote_average).toFixed(
-                                        1,
-                                    )}
-                                    /10
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="recommendation-heading">
-                            <h3>Recommended Movies</h3>
-                            <span>{recommendations.length} results</span>
-                        </div>
-
-                        {recommendations.length > 0 ? (
-                            <div className="movie-grid">
-                                {recommendations.map((movie) => (
-                                    <MovieCard
-                                        key={movie.id}
-                                        movie={movie}
-                                        showSimilarity
-                                        onSelect={handleSelectMovie}
+                    <>
+                        {/* Selected Movie Card */}
+                        <section className="selected-movie-card">
+                            <div className="selected-movie-poster">
+                                {selectedMovie.poster_path ? (
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`}
+                                        alt={`${selectedMovie.title} poster`}
                                     />
-                                ))}
+                                ) : (
+                                    <div className="selected-poster-placeholder">
+                                        No poster available
+                                    </div>
+                                )}
                             </div>
-                        ) : (
-                            <p>No similar movies were found.</p>
-                        )}
-                    </section>
+
+                            <div className="selected-movie-details">
+                                <p className="selected-label">SEARCHED MOVIE</p>
+
+                                <h2>{selectedMovie.title}</h2>
+
+                                <div className="selected-movie-meta">
+                                    {selectedMovie.release_date && (
+                                        <span>
+                                            {selectedMovie.release_date.slice(
+                                                0,
+                                                4,
+                                            )}
+                                        </span>
+                                    )}
+
+                                    {selectedMovie.vote_average != null && (
+                                        <span>
+                                            ★{" "}
+                                            {Number(
+                                                selectedMovie.vote_average,
+                                            ).toFixed(1)}
+                                            /10
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="selected-genres">
+                                    {(selectedMovie.genres || []).map(
+                                        (genre) => (
+                                            <span key={genre.id ?? genre}>
+                                                {typeof genre === "string"
+                                                    ? genre
+                                                    : genre.name}
+                                            </span>
+                                        ),
+                                    )}
+                                </div>
+
+                                <p className="selected-overview">
+                                    {selectedMovie.overview ||
+                                        "No overview available for this movie."}
+                                </p>
+                            </div>
+                        </section>
+
+                        {/* Recommendations */}
+                        <section className="section">
+                            <div className="recommendation-heading">
+                                <h3>Recommended Movies</h3>
+                                <span>{recommendations.length} results</span>
+                            </div>
+
+                            {recommendations.length > 0 ? (
+                                <div className="movie-grid">
+                                    {recommendations.map((movie) => (
+                                        <MovieCard
+                                            key={movie.id}
+                                            movie={movie}
+                                            showSimilarity
+                                            onSelect={handleSelectMovie}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No similar movies were found.</p>
+                            )}
+                        </section>
+                    </>
                 )}
             </main>
         </div>
